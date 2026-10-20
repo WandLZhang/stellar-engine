@@ -217,12 +217,36 @@ class TestDataStores(unittest.TestCase):
         self.assertEqual(kwargs_field["body"]["idField"], "doc_id")
 
     def test_analytics_dockerfile_defines_healthcheck(self):
-        repo_root = pathlib.Path(__file__).resolve().parents[2]
+        repo_root = pathlib.Path(__file__).resolve().parents[1]
         dockerfile = (
             repo_root / "blueprints/gemini-enterprise/analytics/Dockerfile"
         ).read_text(encoding="utf-8")
         self.assertIn("HEALTHCHECK ", dockerfile)
         self.assertIn("/_stcore/health", dockerfile)
+
+    def test_transform_bq_schema_maps_types_modes_and_keys(self):
+        bq_schema = {
+            "fields": [
+                {"name": "id", "type": "STRING", "mode": "REQUIRED"},
+                {"name": "cnt", "type": "INTEGER", "mode": "NULLABLE"},
+                {"name": "tags", "type": "STRING", "mode": "REPEATED"},
+                {
+                    "name": "meta",
+                    "type": "RECORD",
+                    "fields": [{"name": "k", "type": "BOOL"}],
+                },
+            ]
+        }
+
+        result = data_stores.transform_bq_schema(bq_schema, {"title": "id"})
+
+        props = result["properties"]
+        self.assertEqual(props["id"]["keyPropertyMapping"], "title")
+        self.assertEqual(props["cnt"]["type"], "integer")
+        self.assertFalse(props["cnt"]["searchable"])
+        self.assertEqual(props["tags"]["type"], "array")
+        self.assertEqual(props["tags"]["items"]["type"], "string")
+        self.assertEqual(props["meta"]["properties"]["k"]["type"], "boolean")
 
 
 if __name__ == "__main__":
