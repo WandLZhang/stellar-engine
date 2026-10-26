@@ -19,7 +19,7 @@ This blueprint contains all the necessary Terraform modules to build and deploy 
 - Assured Workloads in both environments ensures that sensitive data and workloads in GCP adhere to the rigorous security standards mandated by the DoD, making it suitable for government agencies.
 
 ## How to deploy the Terraform Code.
-The Deployment Steps are outlined in the [Stellar Engine GKE Deployment Guide.](https://docs.google.com/document/d/1N14MwvzrYV2lHhXfH3oVTU-cAk-HXXLhPF9mfm0ieoA/edit?tab=t.0)
+The Deployment Steps are outlined in the Stellar Engine GKE Deployment Guide.
 <!-- BEGIN TFDOC -->
 ## Variables
 
